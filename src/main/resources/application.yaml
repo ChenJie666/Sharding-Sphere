@@ -1,0 +1,41 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  shardingsphere:
+    datasource:
+      # 配置数据源名称
+      names: ds0
+      # 配置第一个数据源
+      ds0:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: jdbc:mysql://192.168.32.244:3306/sphere_test?characterEncoding=utf8&useUnicode=true&useSSL=false&serverTimezone=UTC&allowMultiQueries=true
+        username: root
+        password: hxr
+      # 配置第二个数据源
+      ds1:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: jdbc:mysql://192.168.32.225:3306/sphere_test?characterEncoding=utf8&useUnicode=true&useSSL=false&serverTimezone=UTC&allowMultiQueries=true
+        username: root
+        password: hxr
+    #配置 表 规则
+    sharding:
+      tables:
+        # 实体类的名称
+        course:
+          # 数据库ds0的表ds0.course_1和表ds0.course_2
+          actual-data-nodes: ds0.course_$->{1..2}
+          # 指定主键名称和主键生成策略（雪花算法）
+          key-generator:
+            column: cid
+            type: SNOWFLAKE
+          # 指定分片策略  约定cid值偶数添加到course_1表，奇数添加到course_2表
+          table-strategy:
+            inline:
+              sharding-column: cid
+              algorithm-expression: course_$->{cid%2+1}
+    # 打开sql输出日志
+    props:
+      sql:
+        show: true
