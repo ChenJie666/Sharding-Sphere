@@ -31,9 +31,11 @@ public class ShardingSphereTest {
     @Test
     public void findCourse(){
         QueryWrapper<Course> wrapper = new QueryWrapper<Course>();
-        wrapper.eq("cid", 578276905568960513L);
+        wrapper.eq("cid", 578512878756167681L);
+        wrapper.eq("user_id", 8L);
         Course course = courseMapper.selectOne(wrapper);
         System.out.println(course);
     }
+
 
 }
